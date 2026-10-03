@@ -1,42 +1,27 @@
-# Unreal / ARK Mod Starter
+# ARK Mod - Silent Proxy Installer
 
-This file is a placeholder for the ARK mod-side C++ implementation.
+This folder contains the Unreal/ARK-side starter code that checks for the helper app and launches it automatically.
 
-## Recommended class layout
+## Startup flow
 
-```cpp
-UCLASS()
-class UProxyInstaller : public UActorComponent
-{
-    GENERATED_BODY()
+1. The mod loads during startup.
+2. `InstallAndLaunchIfNeeded()` runs.
+3. It checks for a helper app in the local app-data directory.
+4. If the app is missing, it downloads a signed installer from a known URL.
+5. The app installs to a fixed local folder.
+6. The helper process launches detached from the game.
 
-public:
-    static void InstallAndLaunchIfNeeded();
-    static bool IsProxyInstalled();
-    static void LaunchProxyInBackground();
-};
-```
-
-## Typical flow
+## Key functions
 
 ```cpp
-void UProxyInstaller::InstallAndLaunchIfNeeded()
-{
-    if (IsProxyInstalled())
-    {
-        LaunchProxyInBackground();
-        return;
-    }
-
-    // Download installer silently
-    // Verify checksum
-    // Install to AppData/Local or Program Files
-    // Launch the app
-}
+UProxyInstaller::InstallAndLaunchIfNeeded();
+UProxyInstaller::IsProxyInstalled();
+UProxyInstaller::LaunchProxyInBackground();
 ```
 
-## Notes
+## Production notes
 
-- Use `CreateProcess` / Windows shell APIs or equivalent OS-specific launch methods.
-- Detect the correct install directory for the target OS.
-- Prefer a secure signed installer if you plan to auto-download from the internet.
+- Use a trusted HTTPS distribution URL.
+- Verify the file hash before executing it.
+- Use OS-native APIs for the process launch.
+- Prefer a signed installer for a real release build.

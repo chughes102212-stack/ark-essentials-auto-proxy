@@ -8,6 +8,7 @@ function ensureInstallDir() {
 
 function writeBootstrapFile() {
   ensureInstallDir();
+
   const target = path.join(APP_INSTALL_DIR, 'bootstrap.json');
   const payload = {
     installed: true,
@@ -19,4 +20,7 @@ function writeBootstrapFile() {
   return target;
 }
 
-module.exports = { ensureInstallDir, writeBootstrapFile };
+module.exports = {
+  ensureInstallDir,
+  writeBootstrapFile
+};

@@ -18,4 +18,7 @@ public:
 
     UFUNCTION(BlueprintCallable, Category = "ARK|Proxy")
     static void LaunchProxyInBackground();
+
+    UFUNCTION(BlueprintCallable, Category = "ARK|Proxy")
+    static FString GetInstallDirectory();
 };
