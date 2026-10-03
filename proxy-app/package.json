@@ -1,0 +1,14 @@
+{
+  "name": "ark-proxy-helper",
+  "version": "1.0.0",
+  "description": "Background ARK proxy helper with join-code API",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}

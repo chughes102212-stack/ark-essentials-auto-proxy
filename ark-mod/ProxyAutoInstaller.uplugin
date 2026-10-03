@@ -1,0 +1,27 @@
+{
+  "FileVersion": 3,
+  "Version": 1,
+  "VersionName": "1.0",
+  "FriendlyName": "ProxyAutoInstaller",
+  "Description": "Automatically downloads and launches the companion proxy app in the background.",
+  "Category": "Modding",
+  "CreatedBy": "Copilot",
+  "CreatedByURL": "https://github.com/chughes102212-stack",
+  "DocsURL": "",
+  "MarketplaceURL": "",
+  "SupportURL": "",
+  "EnabledByDefault": true,
+  "CanContainContent": false,
+  "IsBetaVersion": false,
+  "Installed": true,
+  "Modules": [
+    {
+      "Name": "ProxyAutoInstaller",
+      "Type": "Runtime",
+      "LoadingPhase": "PreDefault",
+      "WhitelistPlatforms": [
+        "Win64"
+      ]
+    }
+  ]
+}
