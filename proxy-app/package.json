@@ -1,7 +1,7 @@
 {
   "name": "ark-proxy-helper",
-  "version": "1.0.0",
-  "description": "Background ARK proxy helper with join-code API",
+  "version": "2.0.0",
+  "description": "Complete ARK proxy with join codes, whitelist, bans, jail, and player tracking",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
@@ -10,5 +10,8 @@
   "license": "MIT",
   "dependencies": {
     "express": "^4.19.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }

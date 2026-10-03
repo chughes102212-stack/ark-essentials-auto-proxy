@@ -12,6 +12,7 @@ function writeLauncherState() {
   const stateFile = path.join(APP_INSTALL_DIR, 'launcher-state.json');
   const state = {
     app: APP_NAME,
+    version: '2.0.0',
     installedAt: new Date().toISOString(),
     autoStart: true
   };

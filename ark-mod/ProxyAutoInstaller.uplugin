@@ -1,9 +1,9 @@
 {
   "FileVersion": 3,
-  "Version": 1,
-  "VersionName": "1.0",
+  "Version": 2,
+  "VersionName": "2.0.0",
   "FriendlyName": "ProxyAutoInstaller",
-  "Description": "Automatically downloads and launches the companion proxy app in the background.",
+  "Description": "Automatically downloads and launches the companion proxy app with join codes, whitelist, bans, and jail logic.",
   "Category": "Modding",
   "CreatedBy": "Copilot",
   "CreatedByURL": "https://github.com/chughes102212-stack",

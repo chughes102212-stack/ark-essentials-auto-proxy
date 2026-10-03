@@ -21,4 +21,7 @@ public:
 
     UFUNCTION(BlueprintCallable, Category = "ARK|Proxy")
     static FString GetInstallDirectory();
+
+    UFUNCTION(BlueprintCallable, Category = "ARK|Proxy")
+    static void DownloadInstaller(const FString& URL, const FString& SHA256);
 };
