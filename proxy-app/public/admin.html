@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ARK Admin Panel</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      background: #f5f5f5;
+      color: #333;
+    }
+
+    .navbar {
+      background: #1e3c72;
+      color: white;
+      padding: 15px 20px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .navbar h1 {
+      font-size: 24px;
+      margin: 0;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 0 20px;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #ddd;
+    }
+
+    .tab-btn {
+      padding: 10px 20px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      color: #666;
+      border-bottom: 3px solid transparent;
+      transition: all 0.3s;
+    }
+
+    .tab-btn.active {
+      color: #2a5298;
+      border-bottom-color: #2a5298;
+    }
+
+    .tab-content {
+      display: none;
+      background: white;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .stat-card {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 20px;
+      border-radius: 5px;
+      text-align: center;
+    }
+
+    .stat-card.alt {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    }
+
+    .stat-number {
+      font-size: 32px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .stat-label {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      outline: none;
+      border-color: #2a5298;
+      box-shadow: 0 0 5px rgba(42, 82, 152, 0.3);
+    }
+
+    button {
+      padding: 10px 20px;
+      background: #2a5298;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: bold;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #1e3c72;
+    }
+
+    button.danger {
+      background: #dc3545;
+    }
+
+    button.danger:hover {
+      background: #c82333;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+
+    th {
+      background: #f8f9fa;
+      padding: 12px;
+      text-align: left;
+      border-bottom: 2px solid #ddd;
+      font-weight: bold;
+    }
+
+    td {
+      padding: 12px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    tr:hover {
+      background: #f8f9fa;
+    }
+
+    .action-btn {
+      padding: 5px 10px;
+      margin-right: 5px;
+      font-size: 12px;
+    }
+
+    .message {
+      margin-bottom: 15px;
+      padding: 12px;
+      border-radius: 4px;
+      font-size: 14px;
+      display: none;
+    }
+
+    .message.success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+      display: block;
+    }
+
+    .message.error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+      display: block;
+    }
+
+    .login-form {
+      max-width: 400px;
+      margin: 50px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 5px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .login-form h2 {
+      margin-bottom: 20px;
+      color: #2a5298;
+    }
+
+    .logs-container {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 4px;
+      max-height: 400px;
+      overflow-y: auto;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+    }
+
+    .log-entry {
+      margin-bottom: 5px;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <div class="navbar">
+    <h1>🦖 ARK Admin Panel</h1>
+  </div>
+
+  <div class="container">
+    <div id="loginForm" class="login-form" style="display: none;">
+      <h2>Admin Login</h2>
+      <div class="form-group">
+        <label for="adminPassword">Admin Password</label>
+        <input type="password" id="adminPassword" placeholder="Enter admin password">
+      </div>
+      <button onclick="loginAdmin()">Login</button>
+      <div class="message" id="loginMessage"></div>
+    </div>
+
+    <div id="adminDash" style="display: none;">
+      <div style="text-align: right; margin-bottom: 20px;">
+        <button onclick="logout()" style="background: #dc3545;">Logout</button>
+      </div>
+
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('dashboard')">📊 Dashboard</button>
+        <button class="tab-btn" onclick="switchTab('whitelist')">✅ Whitelist</button>
+        <button class="tab-btn" onclick="switchTab('bans')">🚫 Bans</button>
+        <button class="tab-btn" onclick="switchTab('jail')">🔒 Jail</button>
+        <button class="tab-btn" onclick="switchTab('players')">👥 Players</button>
+        <button class="tab-btn" onclick="switchTab('logs')">📜 Logs</button>
+      </div>
+
+      <!-- Dashboard Tab -->
+      <div id="dashboard" class="tab-content active">
+        <h2>Server Dashboard</h2>
+        <div class="stats-grid" id="statsGrid">
+          <div class="stat-card">
+            <div class="stat-number" id="onlineCount">-</div>
+            <div class="stat-label">Players Online</div>
+          </div>
+          <div class="stat-card alt">
+            <div class="stat-number" id="banCount">-</div>
+            <div class="stat-label">Total Bans</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" id="whitelistCount">-</div>
+            <div class="stat-label">Whitelisted</div>
+          </div>
+          <div class="stat-card alt">
+            <div class="stat-number" id="sessionCount">-</div>
+            <div class="stat-label">Active Sessions</div>
+          </div>
+        </div>
+        <button onclick="refreshStats()">🔄 Refresh Stats</button>
+      </div>
+
+      <!-- Whitelist Tab -->
+      <div id="whitelist" class="tab-content">
+        <h2>Player Whitelist</h2>
+        <div class="message" id="whitelistMsg"></div>
+        <div>
+          <h3 style="margin-bottom: 15px;">Add Player</h3>
+          <div class="form-group">
+            <label for="whitelistPlayerId">Player ID / Steam ID</label>
+            <input type="text" id="whitelistPlayerId" placeholder="e.g., 76561198...">
+          </div>
+          <div class="form-group">
+            <label for="whitelistPlayerName">Player Name</label>
+            <input type="text" id="whitelistPlayerName" placeholder="e.g., john_doe">
+          </div>
+          <div class="form-group">
+            <label for="whitelistTier">Tier</label>
+            <select id="whitelistTier">
+              <option value="guest">Guest</option>
+              <option value="trusted">Trusted</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+          <button onclick="addToWhitelist()">Add to Whitelist</button>
+        </div>
+        <h3 style="margin-top: 30px; margin-bottom: 15px;">Current Whitelist</h3>
+        <table id="whitelistTable">
+          <thead>
+            <tr>
+              <th>Player ID</th>
+              <th>Name</th>
+              <th>Tier</th>
+              <th>Added</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="whitelistBody"></tbody>
+        </table>
+      </div>
+
+      <!-- Bans Tab -->
+      <div id="bans" class="tab-content">
+        <h2>Ban Management</h2>
+        <div class="message" id="banMsg"></div>
+        <div>
+          <h3 style="margin-bottom: 15px;">Add Ban</h3>
+          <div class="form-group">
+            <label for="banPlayerId">Player ID</label>
+            <input type="text" id="banPlayerId" placeholder="e.g., 76561198...">
+          </div>
+          <div class="form-group">
+            <label for="banPlayerName">Player Name</label>
+            <input type="text" id="banPlayerName" placeholder="Player name">
+          </div>
+          <div class="form-group">
+            <label for="banReason">Reason</label>
+            <input type="text" id="banReason" placeholder="e.g., Griefing, Cheating">
+          </div>
+          <div class="form-group">
+            <label for="banDuration">Duration (seconds, 0 = permanent)</label>
+            <input type="text" id="banDuration" placeholder="0 for permanent">
+          </div>
+          <button onclick="addBan()">Ban Player</button>
+        </div>
+        <h3 style="margin-top: 30px; margin-bottom: 15px;">Active Bans</h3>
+        <table id="bansTable">
+          <thead>
+            <tr>
+              <th>Player ID</th>
+              <th>Name</th>
+              <th>Reason</th>
+              <th>Banned</th>
+              <th>Expires</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="bansBody"></tbody>
+        </table>
+      </div>
+
+      <!-- Jail Tab -->
+      <div id="jail" class="tab-content">
+        <h2>Jail Management</h2>
+        <div class="message" id="jailMsg"></div>
+        <div>
+          <h3 style="margin-bottom: 15px;">Jail Player</h3>
+          <div class="form-group">
+            <label for="jailPlayerId">Player ID</label>
+            <input type="text" id="jailPlayerId" placeholder="Player ID">
+          </div>
+          <div class="form-group">
+            <label for="jailZoneName">Zone Name</label>
+            <input type="text" id="jailZoneName" placeholder="e.g., Prison_Zone_1">
+          </div>
+          <div class="form-group">
+            <label for="jailZoneX">Center X</label>
+            <input type="text" id="jailZoneX" placeholder="0">
+          </div>
+          <div class="form-group">
+            <label for="jailZoneY">Center Y</label>
+            <input type="text" id="jailZoneY" placeholder="0">
+          </div>
+          <div class="form-group">
+            <label for="jailZoneZ">Center Z</label>
+            <input type="text" id="jailZoneZ" placeholder="0">
+          </div>
+          <div class="form-group">
+            <label for="jailZoneRadius">Radius</label>
+            <input type="text" id="jailZoneRadius" placeholder="500">
+          </div>
+          <button onclick="jailPlayer()">Jail Player</button>
+        </div>
+        <h3 style="margin-top: 30px; margin-bottom: 15px;">Jailed Players</h3>
+        <table id="jailTable">
+          <thead>
+            <tr>
+              <th>Player ID</th>
+              <th>Zone</th>
+              <th>Jailed</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="jailBody"></tbody>
+        </table>
+      </div>
+
+      <!-- Players Tab -->
+      <div id="players" class="tab-content">
+        <h2>Player Management</h2>
+        <button onclick="loadPlayers()" style="margin-bottom: 15px;">🔄 Refresh Player List</button>
+        <table id="playersTable">
+          <thead>
+            <tr>
+              <th>Player ID</th>
+              <th>Name</th>
+              <th>Server</th>
+              <th>Status</th>
+              <th>Last Login</th>
+              <th>Login Count</th>
+            </tr>
+          </thead>
+          <tbody id="playersBody"></tbody>
+        </table>
+      </div>
+
+      <!-- Logs Tab -->
+      <div id="logs" class="tab-content">
+        <h2>Activity Logs</h2>
+        <button onclick="loadLogs()" style="margin-bottom: 15px;">🔄 Refresh Logs</button>
+        <div class="logs-container" id="logsContainer"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let adminToken = localStorage.getItem('adminToken');
+
+    function init() {
+      if (adminToken) {
+        document.getElementById('loginForm').style.display = 'none';
+        document.getElementById('adminDash').style.display = 'block';
+        refreshStats();
+      } else {
+        document.getElementById('loginForm').style.display = 'block';
+        document.getElementById('adminDash').style.display = 'none';
+      }
+    }
+
+    function loginAdmin() {
+      const password = document.getElementById('adminPassword').value;
+      if (!password) {
+        showMsg('Please enter a password', 'loginMessage', 'error');
+        return;
+      }
+
+      adminToken = `Bearer ${password}`;
+      localStorage.setItem('adminToken', adminToken);
+
+      document.getElementById('loginForm').style.display = 'none';
+      document.getElementById('adminDash').style.display = 'block';
+      refreshStats();
+    }
+
+    function logout() {
+      localStorage.removeItem('adminToken');
+      adminToken = null;
+      document.getElementById('loginForm').style.display = 'block';
+      document.getElementById('adminDash').style.display = 'none';
+      document.getElementById('adminPassword').value = '';
+    }
+
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById(tabName).classList.add('active');
+      event.target.classList.add('active');
+    }
+
+    async function api(endpoint, method = 'GET', body = null) {
+      const opts = {
+        method,
+        headers: { 'Authorization': adminToken, 'Content-Type': 'application/json' }
+      };
+      if (body) opts.body = JSON.stringify(body);
+      const res = await fetch(`/api${endpoint}`, opts);
+      return res.json();
+    }
+
+    async function refreshStats() {
+      const data = await api('/admin/stats');
+      if (data.ok) {
+        document.getElementById('onlineCount').textContent = data.stats.onlinePlayers;
+        document.getElementById('banCount').textContent = data.stats.totalBans;
+        document.getElementById('whitelistCount').textContent = data.stats.totalWhitelisted;
+        document.getElementById('sessionCount').textContent = data.stats.activeSessions;
+      }
+    }
+
+    async function addToWhitelist() {
+      const playerId = document.getElementById('whitelistPlayerId').value;
+      const playerName = document.getElementById('whitelistPlayerName').value;
+      const tier = document.getElementById('whitelistTier').value;
+
+      if (!playerId || !playerName) {
+        showMsg('Fill in all fields', 'whitelistMsg', 'error');
+        return;
+      }
+
+      const data = await api('/admin/whitelist/add', 'POST', { playerId, playerName, tier });
+      if (data.ok) {
+        showMsg('✅ Added to whitelist', 'whitelistMsg', 'success');
+        document.getElementById('whitelistPlayerId').value = '';
+        document.getElementById('whitelistPlayerName').value = '';
+        loadWhitelist();
+      } else {
+        showMsg('❌ Error: ' + data.error, 'whitelistMsg', 'error');
+      }
+    }
+
+    async function loadWhitelist() {
+      const data = await api('/admin/whitelist');
+      if (data.ok) {
+        const tbody = document.getElementById('whitelistBody');
+        tbody.innerHTML = '';
+        data.whitelist.forEach(player => {
+          const row = `<tr>
+            <td>${player.playerId}</td>
+            <td>${player.playerName}</td>
+            <td><strong>${player.tier}</strong></td>
+            <td>${new Date(player.addedAt).toLocaleDateString()}</td>
+            <td><button class="action-btn danger" onclick="removeFromWhitelist('${player.playerId}')">Remove</button></td>
+          </tr>`;
+          tbody.innerHTML += row;
+        });
+      }
+    }
+
+    async function removeFromWhitelist(playerId) {
+      if (confirm('Remove from whitelist?')) {
+        const data = await api('/admin/whitelist/remove', 'POST', { playerId });
+        if (data.ok) {
+          loadWhitelist();
+        }
+      }
+    }
+
+    async function addBan() {
+      const playerId = document.getElementById('banPlayerId').value;
+      const playerName = document.getElementById('banPlayerName').value;
+      const reason = document.getElementById('banReason').value;
+      const duration = parseInt(document.getElementById('banDuration').value) || 0;
+
+      if (!playerId || !playerName || !reason) {
+        showMsg('Fill in all fields', 'banMsg', 'error');
+        return;
+      }
+
+      const data = await api('/admin/ban/add', 'POST', { playerId, playerName, reason, duration });
+      if (data.ok) {
+        showMsg('✅ Player banned', 'banMsg', 'success');
+        document.getElementById('banPlayerId').value = '';
+        document.getElementById('banPlayerName').value = '';
+        document.getElementById('banReason').value = '';
+        document.getElementById('banDuration').value = '';
+        loadBans();
+      }
+    }
+
+    async function loadBans() {
+      const data = await api('/admin/bans');
+      if (data.ok) {
+        const tbody = document.getElementById('bansBody');
+        tbody.innerHTML = '';
+        data.bans.forEach(ban => {
+          const row = `<tr>
+            <td>${ban.playerId}</td>
+            <td>${ban.playerName}</td>
+            <td>${ban.reason}</td>
+            <td>${new Date(ban.bannedAt).toLocaleDateString()}</td>
+            <td>${ban.expiresAt ? new Date(ban.expiresAt).toLocaleDateString() : 'Permanent'}</td>
+            <td><button class="action-btn danger" onclick="unbanPlayer('${ban.playerId}')">Unban</button></td>
+          </tr>`;
+          tbody.innerHTML += row;
+        });
+      }
+    }
+
+    async function unbanPlayer(playerId) {
+      if (confirm('Unban player?')) {
+        const data = await api('/admin/ban/remove', 'POST', { playerId });
+        if (data.ok) loadBans();
+      }
+    }
+
+    async function jailPlayer() {
+      const playerId = document.getElementById('jailPlayerId').value;
+      const name = document.getElementById('jailZoneName').value;
+      const centerX = parseFloat(document.getElementById('jailZoneX').value);
+      const centerY = parseFloat(document.getElementById('jailZoneY').value);
+      const centerZ = parseFloat(document.getElementById('jailZoneZ').value);
+      const radius = parseFloat(document.getElementById('jailZoneRadius').value);
+
+      if (!playerId || !name) {
+        showMsg('Fill in required fields', 'jailMsg', 'error');
+        return;
+      }
+
+      const zone = { name, centerX, centerY, centerZ, radius };
+      const data = await api('/admin/jail/set', 'POST', { playerId, zone });
+      if (data.ok) {
+        showMsg('✅ Player jailed', 'jailMsg', 'success');
+        loadJail();
+      }
+    }
+
+    async function loadJail() {
+      const data = await api('/admin/jail/release', 'POST', {});
+      // Load jailed players - would need endpoint
+    }
+
+    async function loadPlayers() {
+      const data = await api('/admin/players');
+      if (data.ok) {
+        const tbody = document.getElementById('playersBody');
+        tbody.innerHTML = '';
+        data.players.forEach(player => {
+          const row = `<tr>
+            <td>${player.playerId}</td>
+            <td>${player.playerName}</td>
+            <td>${player.server}</td>
+            <td>${player.status}</td>
+            <td>${new Date(player.lastLogin).toLocaleDateString()}</td>
+            <td>${player.loginCount}</td>
+          </tr>`;
+          tbody.innerHTML += row;
+        });
+      }
+    }
+
+    async function loadLogs() {
+      const data = await api('/admin/logs');
+      if (data.ok) {
+        const container = document.getElementById('logsContainer');
+        container.innerHTML = data.logs.map(log => `<div class="log-entry">${log}</div>`).join('');
+      }
+    }
+
+    function showMsg(text, elemId, type) {
+      const el = document.getElementById(elemId);
+      el.textContent = text;
+      el.className = `message ${type}`;
+    }
+
+    init();
+  </script>
+</body>
+</html>

@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ARK Join - Enter Code</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #333;
+    }
+
+    .container {
+      background: white;
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      max-width: 500px;
+      width: 100%;
+      text-align: center;
+    }
+
+    h1 {
+      color: #2a5298;
+      margin-bottom: 10px;
+      font-size: 28px;
+    }
+
+    .subtitle {
+      color: #666;
+      margin-bottom: 30px;
+      font-size: 14px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    input[type="text"],
+    input[type="email"] {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #ddd;
+      border-radius: 5px;
+      font-size: 16px;
+      transition: border-color 0.3s;
+    }
+
+    input[type="text"]:focus,
+    input[type="email"]:focus {
+      outline: none;
+      border-color: #2a5298;
+    }
+
+    input[type="text"].code-input {
+      font-size: 24px;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      text-align: center;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #2a5298;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background: #1e3c72;
+    }
+
+    button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    .message {
+      margin-top: 20px;
+      padding: 12px;
+      border-radius: 5px;
+      font-size: 14px;
+      display: none;
+    }
+
+    .message.success {
+      background: #d4edda;
+      color: #155724;
+      display: block;
+    }
+
+    .message.error {
+      background: #f8d7da;
+      color: #721c24;
+      display: block;
+    }
+
+    .loading {
+      display: none;
+      text-align: center;
+      margin-top: 15px;
+    }
+
+    .spinner {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #2a5298;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .info-box {
+      background: #e7f3ff;
+      border-left: 4px solid #2a5298;
+      padding: 12px;
+      margin-bottom: 20px;
+      border-radius: 4px;
+      font-size: 13px;
+      color: #004085;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🦖 ARK Join Code</h1>
+    <p class="subtitle">Enter your join code to connect to the server</p>
+
+    <div class="info-box">
+      <strong>ℹ️ How it works:</strong><br>
+      Enter your join code and player information below. Your account will be validated against the server's whitelist.
+    </div>
+
+    <form id="joinForm">
+      <div class="form-group">
+        <label for="joinCode">Join Code</label>
+        <input type="text" id="joinCode" class="code-input" placeholder="XXXXXX" maxlength="6" required>
+      </div>
+
+      <div class="form-group">
+        <label for="playerName">Player Name</label>
+        <input type="text" id="playerName" placeholder="Your character name" required>
+      </div>
+
+      <div class="form-group">
+        <label for="playerEmail">Email (for tracking)</label>
+        <input type="email" id="playerEmail" placeholder="your@email.com" required>
+      </div>
+
+      <button type="submit" id="joinBtn">Join Server</button>
+
+      <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <p style="margin-top: 10px;">Validating your credentials...</p>
+      </div>
+    </form>
+
+    <div class="message" id="message"></div>
+  </div>
+
+  <script>
+    const form = document.getElementById('joinForm');
+    const joinCodeInput = document.getElementById('joinCode');
+    const message = document.getElementById('message');
+    const loading = document.getElementById('loading');
+    const joinBtn = document.getElementById('joinBtn');
+
+    // Auto-uppercase join code
+    joinCodeInput.addEventListener('input', (e) => {
+      e.target.value = e.target.value.toUpperCase();
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const code = document.getElementById('joinCode').value.trim();
+      const playerName = document.getElementById('playerName').value.trim();
+      const playerEmail = document.getElementById('playerEmail').value.trim();
+
+      if (!code || !playerName || !playerEmail) {
+        showMessage('Please fill in all fields', 'error');
+        return;
+      }
+
+      // Use email hash as player ID (in production, use Steam ID or similar)
+      const playerId = btoa(playerEmail).substring(0, 16);
+
+      joinBtn.disabled = true;
+      loading.style.display = 'block';
+      message.style.display = 'none';
+
+      try {
+        const response = await fetch('/api/join/validate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ code, playerId, playerName })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.ok) {
+          showMessage(`✅ Join successful! Session ID: ${data.sessionId}`, 'success');
+          console.log('Auth Token:', data.token);
+          console.log('Server:', data.server);
+          
+          // In production, redirect to game or store token for game client
+          setTimeout(() => {
+            alert(`Welcome to ARK!\n\nSession ID: ${data.sessionId}\nServer: ${data.server}`);
+          }, 1000);
+        } else {
+          showMessage(`❌ ${data.error}`, 'error');
+        }
+      } catch (error) {
+        showMessage(`Error: ${error.message}`, 'error');
+      } finally {
+        joinBtn.disabled = false;
+        loading.style.display = 'none';
+      }
+    });
+
+    function showMessage(text, type) {
+      message.textContent = text;
+      message.className = `message ${type}`;
+    }
+  </script>
+</body>
+</html>
