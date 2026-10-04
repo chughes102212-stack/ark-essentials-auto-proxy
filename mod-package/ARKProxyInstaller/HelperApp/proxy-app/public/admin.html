@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>ARK Admin</title>
+  <style>
+    body { font-family: Arial; background: #111827; color: white; padding: 20px; }
+    input, button, select { padding: 10px; margin: 5px 0; border-radius: 6px; border: none; }
+    button { background: #2563eb; color: white; cursor: pointer; }
+    .panel { background: #1f2937; border-radius: 10px; padding: 20px; margin-bottom: 20px; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 10px; border-bottom: 1px solid #374151; text-align: left; }
+  </style>
+</head>
+<body>
+  <h1>ARK Admin</h1>
+  <div class="panel">
+    <h3>Whitelist</h3>
+    <input id="wId" placeholder="Player ID" />
+    <input id="wName" placeholder="Player name" />
+    <select id="wTier">
+      <option value="guest">Guest</option>
+      <option value="trusted">Trusted</option>
+      <option value="admin">Admin</option>
+    </select>
+    <button onclick="addWhitelist()">Add</button>
+  </div>
+
+  <div class="panel">
+    <h3>Ban</h3>
+    <input id="bId" placeholder="Player ID" />
+    <input id="bName" placeholder="Player name" />
+    <input id="bReason" placeholder="Reason" />
+    <button onclick="addBan()">Ban</button>
+  </div>
+
+  <div class="panel">
+    <h3>Stats</h3>
+    <button onclick="loadStats()">Refresh</button>
+    <pre id="statsOutput"></pre>
+  </div>
+
+  <script>
+    const token = 'admin123';
+
+    async function api(path, method = 'GET', body) {
+      const options = { method, headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' } };
+      if (body) options.body = JSON.stringify(body);
+      return await fetch(path, options).then(r => r.json());
+    }
+
+    async function addWhitelist() {
+      const res = await api('/api/admin/whitelist/add', 'POST', {
+        playerId: document.getElementById('wId').value,
+        playerName: document.getElementById('wName').value,
+        tier: document.getElementById('wTier').value
+      });
+      alert(res.ok ? 'Added to whitelist' : 'Failed');
+    }
+
+    async function addBan() {
+      const res = await api('/api/admin/ban/add', 'POST', {
+        playerId: document.getElementById('bId').value,
+        playerName: document.getElementById('bName').value,
+        reason: document.getElementById('bReason').value,
+        duration: 0
+      });
+      alert(res.ok ? 'Banned player' : 'Failed');
+    }
+
+    async function loadStats() {
+      const data = await api('/api/admin/stats');
+      document.getElementById('statsOutput').textContent = JSON.stringify(data, null, 2);
+    }
+  </script>
+</body>
+</html>

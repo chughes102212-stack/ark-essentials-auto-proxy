@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>ARK Join</title>
+  <style>
+    body { font-family: Arial; background: #0f172a; color: white; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+    .box { background: #111827; padding: 30px; border-radius: 10px; width: 420px; }
+    input, button { width: 100%; padding: 12px; margin-top: 10px; border-radius: 6px; border: none; }
+    input { background: #1f2937; color: white; }
+    button { background: #2563eb; color: white; cursor: pointer; }
+    .message { margin-top: 12px; padding: 10px; border-radius: 6px; display: none; }
+    .success { background: #14532d; display: block; }
+    .error { background: #7f1d1d; display: block; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2>ARK Join Code</h2>
+    <input id="code" maxlength="6" placeholder="Enter code" />
+    <input id="playerName" placeholder="Player name" />
+    <button id="submit">Join Server</button>
+    <div id="message" class="message"></div>
+  </div>
+
+  <script>
+    document.getElementById('submit').onclick = async () => {
+      const code = document.getElementById('code').value.trim().toUpperCase();
+      const playerName = document.getElementById('playerName').value.trim();
+      const playerId = 'test-' + Math.random().toString(36).slice(2, 10);
+
+      const res = await fetch('/api/join/validate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code, playerId, playerName })
+      });
+
+      const data = await res.json();
+      const msg = document.getElementById('message');
+      msg.className = 'message ' + (res.ok ? 'success' : 'error');
+      msg.textContent = res.ok ? `Join approved! Session: ${data.sessionId}` : data.error;
+      msg.style.display = 'block';
+    };
+  </script>
+</body>
+</html>

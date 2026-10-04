@@ -1,0 +1,27 @@
+{
+  "FileVersion": 3,
+  "Version": 2,
+  "VersionName": "2.0.0",
+  "FriendlyName": "ARKProxyInstaller",
+  "Description": "Starts a helper app and exposes a local session join system for testing and private-server workflows.",
+  "Category": "Modding",
+  "CreatedBy": "Copilot",
+  "CreatedByURL": "https://github.com/chughes102212-stack",
+  "DocsURL": "",
+  "MarketplaceURL": "",
+  "SupportURL": "",
+  "EnabledByDefault": true,
+  "CanContainContent": false,
+  "IsBetaVersion": false,
+  "Installed": true,
+  "Modules": [
+    {
+      "Name": "ARKProxyInstaller",
+      "Type": "Runtime",
+      "LoadingPhase": "PreDefault",
+      "WhitelistPlatforms": [
+        "Win64"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "name": "ark-proxy-helper",
+  "version": "2.0.0",
+  "description": "Local helper app for session join testing and admin workflows",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
